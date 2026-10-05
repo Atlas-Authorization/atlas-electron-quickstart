@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Atlas + Electron</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 24px; }
+      input, button { display: block; width: 100%; box-sizing: border-box; margin: 6px 0; padding: 8px; }
+      pre { background: #f4f4f5; padding: 10px; border-radius: 6px; white-space: pre-wrap; word-break: break-all; }
+    </style>
+  </head>
+  <body>
+    <h2>Atlas + Electron</h2>
+    <input id="accessToken" type="text" placeholder="OAuth access token (from loopback OAuth)" />
+    <button id="signin">Exchange for a session</button>
+    <button id="refresh">Refresh</button>
+    <button id="signout">Sign out</button>
+    <pre id="out">…</pre>
+    <script type="module" src="renderer.bundle.js"></script>
+  </body>
+</html>
