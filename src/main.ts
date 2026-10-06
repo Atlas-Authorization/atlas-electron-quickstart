@@ -8,26 +8,26 @@
 //   - `createNativeSessionManager` owns the native session: it exchanges a
 //     first-party OAuth access token for an Atlas session and auto-refreshes
 //     (rotating) the refresh token, persisting each rotation.
-const { app, BrowserWindow, ipcMain } = require('electron');
-const path = require('node:path');
-const {
+import { app, BrowserWindow, ipcMain } from 'electron';
+import path from 'node:path';
+import {
   createAtlasBridge,
   createInMemoryTokenStorage,
   createNativeSessionManager,
   exchangeForSession,
   clearNativeSession,
-} = require('@atlasauth/electron');
-const config = require('./config');
+} from '@atlasauth/electron';
+import { config } from './config';
 
 // In-memory for the quickstart. In production use:
 //   createTokenStorage({ store: new Store(...), cipher: safeStorageCipher(safeStorage, b64 => Buffer.from(b64,'base64')) })
 // so the rotating refresh token is encrypted at rest and survives a restart.
 const storage = createInMemoryTokenStorage();
 
-let bridge;
-let manager;
+let bridge: ReturnType<typeof createAtlasBridge>;
+let manager: Awaited<ReturnType<typeof createNativeSessionManager>>;
 
-function createWindow() {
+function createWindow(): void {
   const win = new BrowserWindow({
     width: 480,
     height: 540,
@@ -55,7 +55,7 @@ app.whenReady().then(async () => {
   // Exchange an OAuth access token (obtained via the system browser / loopback
   // redirect — see README) for an Atlas session, then publish the session JWT to
   // the bridge so the renderer can bearer it on FAPI calls.
-  ipcMain.handle('atlas:sign-in', async (_event, accessToken) => {
+  ipcMain.handle('atlas:sign-in', async (_event, accessToken: string) => {
     const session = await exchangeForSession({
       baseUrl: config.frontendApi,
       clientId: config.clientId,

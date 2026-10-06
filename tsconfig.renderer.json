@@ -1,0 +1,15 @@
+{
+  // Renderer (browser context, bundled by esbuild). Typecheck only.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM"],
+    "types": [],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["src/renderer.ts", "src/renderer-env.d.ts"]
+}

@@ -11,15 +11,30 @@ const client = createAtlasClient({
   frontendApi: cfg.frontendApi,
 });
 
-const $ = (id) => document.getElementById(id);
-const out = (v) => ($('out').textContent = typeof v === 'string' ? v : JSON.stringify(v, null, 2));
+const $ = <T extends HTMLElement = HTMLElement>(id: string): T => {
+  const el = document.getElementById(id);
+  if (!el) throw new Error(`Missing #${id}`);
+  return el as T;
+};
+const out = (v: unknown): void => {
+  $('out').textContent = typeof v === 'string' ? v : JSON.stringify(v, null, 2);
+};
 
-async function render() {
+/** Shape of `GET /v1/client` (only the fields this window reads). */
+interface ClientView {
+  session?: { id: string } | null;
+  user?: unknown;
+}
+
+async function render(): Promise<void> {
   const bridge = getAtlasBridge();
   const token = bridge ? await bridge.getToken() : null;
-  if (!token) return out('Signed out.');
+  if (!token) {
+    out('Signed out.');
+    return;
+  }
   // Bearer-wired automatically from the bridge token.
-  const res = await client.get('/v1/client');
+  const res = await client.get<ClientView>('/v1/client');
   out(res.ok ? { user: res.data?.user, sessionId: res.data?.session?.id } : 'Token present but invalid.');
 }
 
@@ -27,7 +42,7 @@ $('signin').addEventListener('click', async () => {
   // In a real app you obtain this access token via a system-browser / loopback
   // OAuth flow (BrowserWindow to the authorize URL, capture the redirect). Here
   // you paste it to drive the exchange end-to-end.
-  const token = $('accessToken').value.trim();
+  const token = $<HTMLInputElement>('accessToken').value.trim();
   const result = await window.atlasAuth.signIn(token);
   out(result.ok ? `Signed in (session ${result.sessionId}).` : 'Exchange failed.');
   await render();

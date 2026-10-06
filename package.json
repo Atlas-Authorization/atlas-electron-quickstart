@@ -3,16 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "description": "Electron desktop app wired to Atlas with the native-session flow (@atlasauth/electron): main bridge + preload + renderer.",
-  "main": "src/main.js",
+  "main": "dist/main.js",
   "scripts": {
-    "build": "esbuild src/renderer.js --bundle --format=esm --platform=browser --outfile=renderer.bundle.js",
-    "start": "npm run build && electron ."
+    "build": "npm run build:main && npm run build:renderer",
+    "start": "npm run build && electron .",
+    "build:main": "tsc",
+    "build:renderer": "esbuild src/renderer.ts --bundle --format=esm --platform=browser --outfile=renderer.bundle.js",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.renderer.json",
+    "dev": "npm run start"
   },
   "dependencies": {
     "@atlasauth/electron": "^0.2.0"
   },
   "devDependencies": {
+    "@types/node": "^26.6.4",
     "electron": "^33.2.1",
-    "esbuild": "^0.24.2"
+    "esbuild": "^0.24.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
   }
 }

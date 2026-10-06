@@ -21,6 +21,13 @@ over a narrow IPC bridge.
 - **`src/renderer.js`** — `createAtlasClient(...)` + `getAtlasBridge()` build the
   bearer-wired `@atlasauth/js` FapiClient; `GET /v1/client` reads the session.
 
+## TypeScript layout
+
+Main + preload are compiled by `tsc` (`tsconfig.json`, CommonJS, ES2022) into
+`dist/` (`"main": "dist/main.js"`). The renderer is typed via
+`tsconfig.renderer.json` (DOM lib, bundler resolution) and bundled by esbuild;
+`src/renderer-env.d.ts` types the `window.atlasAuth` API from the preload.
+
 ## Getting the access token
 
 In production you obtain the first-party OAuth access token with a **system
@@ -34,7 +41,8 @@ token so the `exchangeForSession` → manager → bridge path runs end-to-end.
 ```sh
 npm install
 cp .env.example .env     # export the vars, or edit src/config.js
-npm start                # bundles the renderer, launches Electron
+npm start                # tsc (main + preload -> dist/), esbuild (renderer), launches Electron
+npm run typecheck        # tsc --noEmit for main/preload and the renderer
 ```
 
 ## Packages
