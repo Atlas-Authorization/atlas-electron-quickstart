@@ -13,7 +13,7 @@
     "dev": "npm run start"
   },
   "dependencies": {
-    "@atlasauth/electron": "^0.2.0"
+    "@atlasauth/electron": "^0.3.0"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",
